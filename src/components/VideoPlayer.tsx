@@ -17,7 +17,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
 
     useEffect(() => {
         const checkDomain = (playerInstance: any) => {
-            const authorizedDomains = ['localhost', 'notutor.ai', 'www.notutor.ai'];
+            const authorizedDomains = ['notutorextension-git-main-chiranjeevis-projects-2c5bc43c.vercel.app', 'notutor.ai', 'www.notutor.ai'];
             if (!authorizedDomains.includes(window.location.hostname)) {
                 playerInstance.error({
                     code: 4,
