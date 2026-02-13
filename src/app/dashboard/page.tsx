@@ -6,6 +6,7 @@ import { Play, FileText, Save, Clock, BookOpen, ChevronRight, Layout, Settings, 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import { VideoPlayer } from "@/components/VideoPlayer"
 
 export default function DashboardPage() {
     const [note, setNote] = useState("")
@@ -149,14 +150,21 @@ export default function DashboardPage() {
                                             <p className="text-white/30 mt-10 font-black tracking-[0.4em] text-[10px] skew-x-[-12deg] uppercase">INITIALIZING SESSION CONTENT...</p>
                                         </div>
                                     ) : (
-                                        <iframe
-                                            className="w-full h-full"
-                                            src="https://www.youtube.com/embed/SST966X9YQc?autoplay=1&mute=0"
-                                            title="Physics Lesson"
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowFullScreen
-                                        ></iframe>
+                                        <div className="w-full h-full bg-black">
+                                            <VideoPlayer
+                                                options={{
+                                                    autoplay: true,
+                                                    controls: true,
+                                                    responsive: true,
+                                                    fluid: true,
+                                                    sources: [{
+                                                        src: 'https://res.cloudinary.com/dl0jkdtj6/video/upload/v1770871882/Screen_Recording_2026-01-27_175011_nfzlkp.mp4',
+                                                        type: 'video/mp4'
+                                                    }]
+                                                }}
+                                                watermarkText={userId || "Student User"}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>
