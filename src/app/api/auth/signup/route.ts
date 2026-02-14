@@ -4,10 +4,17 @@ import bcrypt from 'bcryptjs'
 
 export const dynamic = 'force-dynamic'
 
-
 export async function POST(request: Request) {
     try {
+        console.log('Signup attempt started')
+
+        if (!process.env.DATABASE_URL) {
+            console.error('DATABASE_URL is not defined in environment variables')
+            return NextResponse.json({ message: 'Database configuration missing' }, { status: 500 })
+        }
+
         const { name, email, password } = await request.json()
+        console.log(`Signup attempt for email: ${email}`)
 
         if (!email || !password || !name) {
             return NextResponse.json(
@@ -21,6 +28,7 @@ export async function POST(request: Request) {
         })
 
         if (existingUser) {
+            console.log(`User already exists for email: ${email}`)
             return NextResponse.json(
                 { message: 'User already exists' },
                 { status: 400 }
@@ -37,14 +45,18 @@ export async function POST(request: Request) {
             },
         })
 
+        console.log(`User created successfully: ${user.id}`)
         return NextResponse.json(
             { message: 'User created successfully', user: { id: user.id, name: user.name, email: user.email } },
             { status: 201 }
         )
-    } catch (error) {
-        console.error('Signup error:', error)
+    } catch (error: any) {
+        console.error('CRITICAL SIGNUP ERROR:', error)
         return NextResponse.json(
-            { message: 'Internal server error' },
+            {
+                message: 'Internal server error',
+                details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
             { status: 500 }
         )
     }

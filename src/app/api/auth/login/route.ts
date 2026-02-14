@@ -4,10 +4,17 @@ import bcrypt from 'bcryptjs'
 
 export const dynamic = 'force-dynamic'
 
-
 export async function POST(request: Request) {
     try {
+        console.log('Login attempt started')
+
+        if (!process.env.DATABASE_URL) {
+            console.error('DATABASE_URL is not defined in environment variables')
+            return NextResponse.json({ message: 'Database configuration missing' }, { status: 500 })
+        }
+
         const { email, password } = await request.json()
+        console.log(`Login attempt for email: ${email}`)
 
         if (!email || !password) {
             return NextResponse.json(
@@ -21,6 +28,7 @@ export async function POST(request: Request) {
         })
 
         if (!user) {
+            console.log(`User not found for email: ${email}`)
             return NextResponse.json(
                 { message: 'you are new user so you have to signup' },
                 { status: 404 }
@@ -30,21 +38,25 @@ export async function POST(request: Request) {
         const isPasswordValid = await bcrypt.compare(password, user.password)
 
         if (!isPasswordValid) {
+            console.log(`Invalid password for email: ${email}`)
             return NextResponse.json(
                 { message: 'Invalid credentials' },
                 { status: 401 }
             )
         }
 
-        // In a real app, you'd set a session/cookie here
+        console.log(`Login successful for user: ${user.id}`)
         return NextResponse.json(
             { message: 'Login successful', user: { id: user.id, name: user.name, email: user.email } },
             { status: 200 }
         )
-    } catch (error) {
-        console.error('Login error:', error)
+    } catch (error: any) {
+        console.error('CRITICAL LOGIN ERROR:', error)
         return NextResponse.json(
-            { message: 'Internal server error' },
+            {
+                message: 'Internal server error',
+                details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
             { status: 500 }
         )
     }
