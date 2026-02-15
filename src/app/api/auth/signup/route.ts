@@ -9,8 +9,9 @@ export async function POST(request: Request) {
         console.log('Signup attempt started')
 
         if (!process.env.DATABASE_URL) {
-            console.error('DATABASE_URL is not defined in environment variables')
-            return NextResponse.json({ message: 'Database configuration missing' }, { status: 500 })
+            const errorMsg = 'DATABASE_URL is not defined in environment variables';
+            console.error(errorMsg);
+            return NextResponse.json({ message: errorMsg }, { status: 500 });
         }
 
         const { name, email, password } = await request.json()
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
             {
                 message: 'Internal server error',
-                details: process.env.NODE_ENV === 'development' ? error.message : undefined
+                details: error.message
             },
             { status: 500 }
         )
