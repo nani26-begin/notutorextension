@@ -56,6 +56,7 @@ export async function POST(req: Request) {
             resource_type: 'video',
             format: 'mp4',
             sign_url: true, // This generates a signed URL
+            version: "1770871882",
             ...transformation
         });
 
