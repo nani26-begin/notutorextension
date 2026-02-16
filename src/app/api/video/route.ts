@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         const isSubscribed = user.isSubscribed;
 
         // Logic for "Signed URL" (Mocked for now)
-        const baseUrl = `https://www.w3schools.com/html/mov_bbb.mp4`;
+        const baseUrl = `https://res.cloudinary.com/dl0jkdtj6/video/upload/v1770871882/Screen_Recording_2026-01-27_175011_nfzlkp.mp4`;
 
         let videoUrl = baseUrl;
         let accessLevel = 'limited';
