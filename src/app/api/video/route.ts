@@ -62,7 +62,10 @@ export async function POST(req: Request) {
         // Add a query param for frontend logic (displaying "Limited" text, etc.)
         // Note: The signature validates the transformation (eo_120). 
         // Changing the URL params manually will break the signature and Cloudinary will reject it.
-        const finalizedUrl = isSubscribed ? `${videoUrl}&access=full` : `${videoUrl}&access=limited`;
+        const separator = videoUrl.includes('?') ? '&' : '?';
+        const finalizedUrl = isSubscribed
+            ? `${videoUrl}${separator}access=full`
+            : `${videoUrl}${separator}access=limited`;
 
         return NextResponse.json({
             videoUrl: finalizedUrl,
