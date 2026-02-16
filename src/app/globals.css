@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.145 0.045 242.49);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.145 0.045 242.49);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.145 0.045 242.49);
+  --color-primary: oklch(0.205 0.047 242.61);
+  --color-primary-foreground: oklch(0.985 0.002 247.83);
+  --color-secondary: oklch(0.97 0.001 286.37);
+  --color-secondary-foreground: oklch(0.205 0.047 242.61);
+  --color-muted: oklch(0.97 0.001 286.37);
+  --color-muted-foreground: oklch(0.556 0.021 242.29);
+  --color-accent: oklch(0.97 0.001 286.37);
+  --color-accent-foreground: oklch(0.205 0.047 242.61);
+  --color-destructive: oklch(0.577 0.245 27.32);
+  --color-destructive-foreground: oklch(0.577 0.245 27.32);
+  --color-border: oklch(0.922 0 0);
+  --color-input: oklch(0.922 0 0);
+  --color-ring: oklch(0.708 0.032 236.42);
+
+  --radius-lg: 0.625rem;
+  --radius-md: calc(var(--radius-lg) - 2px);
+  --radius-sm: calc(var(--radius-lg) - 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+@layer utilities {
+  .glass {
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
+
+  .glass-dark {
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-400;
+  }
+
+  .btn-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-300;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+  }
+
+  .btn-gradient:hover {
+    @apply from-blue-700 to-cyan-600;
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
+  }
+}
