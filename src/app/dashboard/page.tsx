@@ -163,6 +163,7 @@ export default function DashboardPage() {
                                                     }]
                                                 }}
                                                 watermarkText={userId || "Student User"}
+                                                videoId="demo-physics-refraction"
                                             />
                                         </div>
                                     )}
