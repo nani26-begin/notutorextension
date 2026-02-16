@@ -6,20 +6,12 @@ generator client {
 }
 
 datasource db {
-<<<<<<< HEAD
-  provider = "sqlite"
-=======
   provider = "postgresql"
->>>>>>> 4e2bcc8 (Migrate database to PostgreSQL)
   url      = env("DATABASE_URL")
 }
 
 model User {
-<<<<<<< HEAD
-  id        String   @id @default(cuid())
-=======
   id        String   @id @default(uuid())
->>>>>>> 4e2bcc8 (Migrate database to PostgreSQL)
   name      String?
   email     String   @unique
   password  String
@@ -29,11 +21,7 @@ model User {
 }
 
 model Note {
-<<<<<<< HEAD
-  id        String   @id @default(cuid())
-=======
   id        String   @id @default(uuid())
->>>>>>> 4e2bcc8 (Migrate database to PostgreSQL)
   content   String
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
