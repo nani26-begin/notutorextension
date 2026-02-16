@@ -111,10 +111,20 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
 
         const { accessLevel, timeLimit } = accessInfo;
 
+        // Check for access parameters in the URL if present (redundant but safe)
+        if (accessInfo.videoUrl && accessInfo.videoUrl.includes('access=limited')) {
+            // Ensure accessLevel aligns with URL params
+            if (accessLevel !== 'limited') {
+                console.warn("Access level mismatch between API response and URL params");
+            }
+        }
+
         if (accessLevel === 'limited' && timeLimit > 0) {
             if (currentTime >= timeLimit) {
                 playerRef.current.pause();
-                playerRef.current.exitFullscreen(); // Exit fullscreen if active
+                if (document.fullscreenElement) {
+                    playerRef.current.exitFullscreen();
+                }
                 setIsModalOpen(true);
             }
         }

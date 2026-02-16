@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req: Request) {
     try {
@@ -25,23 +33,39 @@ export async function POST(req: Request) {
 
         const isSubscribed = user.isSubscribed;
 
-        // Logic for "Signed URL" (Mocked for now)
-        const baseUrl = `https://res.cloudinary.com/dl0jkdtj6/video/upload/v1770871882/Screen_Recording_2026-01-27_175011_nfzlkp.mp4`;
+        // Base public ID of your video on Cloudinary
+        const publicId = 'Screen_Recording_2026-01-27_175011_nfzlkp';
 
-        let videoUrl = baseUrl;
+        let transformation = {};
+
         let accessLevel = 'limited';
-        let timeLimit = 120; // 2 minutes in seconds
+        let timeLimit = 120; // 2 minutes
 
-        if (isSubscribed) {
+        // Generate Signed URL
+        // If not subscribed, limit duration to 120 seconds using 'end_offset' (eo_120)
+        if (!isSubscribed) {
+            transformation = { end_offset: "120" };
+        } else {
             accessLevel = 'full';
             timeLimit = -1; // Unlimited
-            videoUrl = `${baseUrl}?access=full&token=mock_signed_token_full`;
-        } else {
-            videoUrl = `${baseUrl}?access=limited&token=mock_signed_token_limited`;
+            // No transformation needed for full video, or maybe explicit quality settings
         }
 
+        // Generate the URL
+        const videoUrl = cloudinary.url(publicId, {
+            resource_type: 'video',
+            format: 'mp4',
+            sign_url: true, // This generates a signed URL
+            ...transformation
+        });
+
+        // Add a query param for frontend logic (displaying "Limited" text, etc.)
+        // Note: The signature validates the transformation (eo_120). 
+        // Changing the URL params manually will break the signature and Cloudinary will reject it.
+        const finalizedUrl = isSubscribed ? `${videoUrl}&access=full` : `${videoUrl}&access=limited`;
+
         return NextResponse.json({
-            videoUrl,
+            videoUrl: finalizedUrl,
             accessLevel,
             timeLimit,
             isSubscribed
