@@ -13,6 +13,7 @@
     "@types/video.js": "^7.3.58",
     "axios": "^1.13.5",
     "bcryptjs": "^3.0.3",
+    "bigbluebutton-js": "^0.2.0",
     "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
     "dotenv": "^17.3.1",
