@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { bbb } from "@/lib/bbb";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
     try {
-        const { userId } = await req.json();
+        const { searchParams } = new URL(req.url);
+        const userId = searchParams.get("userId");
 
         if (!userId) {
             return NextResponse.json({ message: "User ID is required" }, { status: 400 });
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: "BigBlueButton is not configured" }, { status: 500 });
         }
 
-        // Fetch user from DB to get their name
+        // Fetch user from DB to get their name and role
         const user = await prisma.user.findUnique({
             where: { id: userId },
         });
@@ -42,10 +43,10 @@ export async function POST(req: Request) {
             meetingID: meetingID,
             password: isAdmin ? "mp" : "ap", // Use moderator password for admins
             userID: user.id,
-            redirect: true,
+            redirect: false, // We will handle redirect manually to ensure it works
         });
 
-        return NextResponse.json({ joinUrl, role: (user as any).role }, { status: 200 });
+        return NextResponse.redirect(joinUrl);
     } catch (error: any) {
         console.error("BBB Join Error:", error);
         return NextResponse.json({ message: error.message || "Internal server error" }, { status: 500 });

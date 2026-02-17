@@ -14,10 +14,12 @@ export async function sendEmail({
   const apiKey = process.env.ZEPTOMAIL_API_KEY;
   const fromEmail = process.env.ZEPTOMAIL_FROM_EMAIL;
   const fromName = process.env.ZEPTOMAIL_FROM_NAME;
+  const isEnabled = process.env.ZEPTOMAIL_ENABLED !== 'false';
 
-  if (!url || !apiKey || !fromEmail) {
-    console.warn('ZeptoMail configuration missing. Log mode only.');
+  if (!url || !apiKey || !fromEmail || !isEnabled) {
+    console.warn(`ZeptoMail ${!isEnabled ? 'disabled' : 'configuration missing'}. Log mode only.`);
     console.log(`[Email Mock] To: ${to}, Subject: ${subject}`);
+    console.log(`[Email Mock] HTML: ${html}`);
     return;
   }
 
@@ -50,11 +52,14 @@ export async function sendEmail({
     console.log('Email sent successfully:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Error sending email (Full Details):', JSON.stringify(error.response?.data || error.message, null, 2));
-    if (error.response) {
-      console.error('Status:', error.response.status);
-      console.error('Headers:', error.response.headers);
-    }
-    throw new Error(`Failed to send email: ${JSON.stringify(error.response?.data || error.message)}`);
+    const errorData = error.response?.data;
+    console.error('ZeptoMail Error Details:', {
+      status: error.response?.status,
+      errorCode: errorData?.error?.code,
+      errorMessage: errorData?.error?.details?.[0]?.message || errorData?.message || error.message,
+      requestId: errorData?.request_id
+    });
+
+    throw new Error(`Failed to send email: ${errorData?.error?.details?.[0]?.message || error.message}`);
   }
 }

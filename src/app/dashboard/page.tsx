@@ -512,31 +512,14 @@ export default function DashboardPage() {
                                     <motion.button
                                         whileHover={{ scale: 1.05, y: -2 }}
                                         whileTap={{ scale: 0.98 }}
-                                        onClick={async () => {
+                                        onClick={() => {
                                             if (!userId) return;
-                                            setIsSaving(true);
-                                            try {
-                                                const response = await axios.post("/api/live/join", { userId });
-                                                if (response.data.joinUrl) {
-                                                    window.open(response.data.joinUrl, '_blank');
-                                                }
-                                            } catch (err) {
-                                                console.error("Failed to join live session", err);
-                                            } finally {
-                                                setIsSaving(false);
-                                            }
+                                            window.open(`/api/live/join?userId=${userId}`, '_blank');
                                         }}
-                                        disabled={isSaving}
                                         className="w-full py-6 btn-gradient text-white rounded-3xl font-black text-xl tracking-tighter shadow-2xl shadow-blue-500/20 flex items-center justify-center gap-4 transition-all uppercase italic"
                                     >
-                                        {isSaving ? (
-                                            <Loader2 className="w-6 h-6 animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Sparkles className="w-6 h-6" />
-                                                START SYNC SESSION
-                                            </>
-                                        )}
+                                        <Sparkles className="w-6 h-6" />
+                                        START SYNC SESSION
                                     </motion.button>
 
                                     <p className="mt-8 text-[10px] font-bold text-slate-600 uppercase tracking-widest italic flex items-center gap-2">

@@ -50,7 +50,7 @@ export async function GET() {
             urlSignedFull
         });
 
-    } catch (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }
